@@ -1,23 +1,20 @@
 # SITE CONFIGURATION
-title: Sleek # your site title
-author: GitHub User # You :P
+title: cassioroos # your site title
+author: cassioroos # You :P
 description: > # Meta description of Homepage
   Write an awesome description for your new site here. You can edit this
   line in _config.yml. It will appear in your document head meta (for
   Google search results) and in your feed.xml site description.
-baseurl: "/sleek" # the subpath of your site, e.g. /blog
-url: "https://janczizikow.github.io/" # the base hostname & protocol for your site, e.g. http://example.com
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "https://cassioroos.com
 
 # SEO PLUGIN
 social:
-  name: Your Name
+  name: cassioroos
   links:
-    - https://twitter.com/BenBalter
-    - https://www.facebook.com/ben.balter
-    - https://www.linkedin.com/in/BenBalter
-    - https://plus.google.com/+BenBalter
-    - https://github.com/benbalter
-    - https://keybase.io/benbalter
+    - https://twitter.com/cassioroos
+    - https://www.linkedin.com/in/cassioroos
+    - https://github.com/CassioRoos
 
 # THEME SETTINGS
 navigation: # Navigation links
@@ -32,9 +29,8 @@ hero_img: posts/sleek_lg.jpg # Main background image: use the path from /assets/
 
 email: your-email@domain.com # email for form submission
 
-twitter_username: jan_czizikow # replace with your_twitter_username or comment to remove link from footer
-github_username:  janczizikow # replace with your_github_username or comment to remove link from footer
-instagram_username: shanlongjj # replace with your_instagram_username or comment to remove link from footer
+twitter_username: cassioroos
+github_username:  cassioroos
 
 disqus:
   shortname: janczizikow # to enable comments replace with your_disqus_shortname
@@ -61,7 +57,7 @@ exclude:
   - sleek.jpg
 
 include: ['_pages']
-permalink: /:title/
+#permalink: /:title/
 
 compress_html:
   clippings: all
@@ -69,3 +65,4 @@ compress_html:
 plugins:
   - jekyll-sitemap
   - jekyll-seo-tag
+  - jekyll-feed
