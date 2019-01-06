@@ -6,7 +6,7 @@ categories:
 tags:
   - pt-br
   - pessoal
-featured-img: vamos_ver_no_que_da
+featured-img: /assets/img/posts/vamos_ver_no_que_da_placehold.png
 last_modified_at: 2019-01-06T16:56:32-05:00
 ---
 
