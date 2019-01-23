@@ -153,7 +153,7 @@ No prompt do python
 
 Acessando `localhost:5601`, para visualizarmos o log no kibana, a tela de configuração irá aparecer com o botão create habilitado, conforme imagem a baixo:
 
-<img src="https://imgur.com/bYMHGHw" style="height:300px;"/>
+<img src="https://i.imgur.com/bYMHGHw.png" style="height:300px;"/>
 
 Depois de clicar em create, os índices serão exibidos e é só clicar em discover para ver os seus logs no kibana. Tudo pronto, os logs estão disponíveis, a partir de agora é configurar o kibana conforme a sua necessidade.
 
