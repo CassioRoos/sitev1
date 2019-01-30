@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "ELK - Elastisearh logstash kibana"
+title: "ELK - Elasticsearh Logstash Kibana"
 categories:
   - pt-br
 tags:
