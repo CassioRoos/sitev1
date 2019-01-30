@@ -135,3 +135,10 @@ docker build -t app-docker .
 
 Que basicamente é: Docker, **construa** o container **app-docker** a partir desta pasta. O docker tem suporta a ajuda em todos os seus comandos, caso tenha duvida escreva o comando e **--help**, no nosso caso: `docker build --help`.
 
+```
+docker tag appdocker cassioroos/appdocker
+```
+
+```
+docker pull cassioroos/app-docker
+```
