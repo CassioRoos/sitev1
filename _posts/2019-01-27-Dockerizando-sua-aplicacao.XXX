@@ -133,12 +133,36 @@ Para subir o container vamos executar o comando no cmd:
 docker build -t app-docker .
 ```
 
-Que basicamente é: Docker, **construa** o container **app-docker** a partir desta pasta. O docker tem suporta a ajuda em todos os seus comandos, caso tenha duvida escreva o comando e **--help**, no nosso caso: `docker build --help`.
+Que basicamente é: Docker, **construa** o container **app-docker** a partir desta pasta. O docker tem suporta a ajuda em todos os seus comandos, caso tenha duvida escreva o comando e **--help**, no nosso caso: `docker build --help`. A partir deste momento o container esta pronto para uso, para subi-lo vamos utilizar o `docker run`.
+
+```
+docker run -p 5001:5001 --name app-docker -d cassioroos/app-docker
+```
+
+Se tudo deu certo, o docker ira mostrar o ID gerado para o container logo após o comando. Para ver o container devemos executar o comando `docker ps`, que exibira:
+
+```
+CONTAINER ID        IMAGE                   COMMAND             CREATED             STATUS              PORTS                    NAMES
+3abd9b8240b7        app-docker             "python app.py"     38 seconds ago      Up 35 seconds       0.0.0.0:5001->5001/tcp   app-docker
+```
+
+Pronto. Agora é acessar `localhost:5001` no seu navegador e vamos ter a resposta do nosso app de dentro do container. Tudo isso é muito legal, mas ainda precisamos disponibilizar o container para que outras pessoas/organizaççoes tenham acesso. Nesse exemplo vou utilizar o próprio (DockerHub)[https://hub.docker.com]
+
+# Publicando o container
+
+A primeira coisa que precisamos fazer é gerar uma tag para o nosso container, que basicamente é a maneira de identificar as diferentes versões de um mesmo container. Para a tag é só informar a imagem e a tag, vale a pena verificar o help `docker tag --help`.
 
 ```
 docker tag appdocker cassioroos/appdocker
 ```
+Agora é só enviar o nosso container para o DockerHub
 
 ```
-docker pull cassioroos/app-docker
+docker push cassioroos/app-docker
 ```
+
+FIM.
+
+Partiu ver como ficou, vamos acessar o DockerHub e ver a nossa imagem publicada, se limparmos todo o nosso ambiente, podemos fazer o download desse container em qualquer maquina que tenha docker instalado e ele ira funcionar como no nosso ambiente.
+
+Espero que tenham gostado. 
