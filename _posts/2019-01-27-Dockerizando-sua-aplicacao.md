@@ -7,22 +7,22 @@ tags:
   - pt-br
   - python
   - docker
-featured-img: elk
-last_modified_at: 2019-01-29T21:26:32-05:00
+featured-img: docker
+last_modified_at: 2019-01-31T21:33:32-05:00
 ---
 
 
 ## [Docker](https://www.docker.com/get-started)
 
-Docker é uma ferramente designada a tornar mais fácil, criar, fazer deploy e rodar aplicaççoes usando container. Container permitem ao desenvolvedor, empacotar toda uma aplicação com as suas dependencias e enviar como um pacote unico. Fazendo isso, graças aos container, o desenvolvedor pode ficar tranquilo que a aplicação irá rodar independentemente da outra maquina, desconsiderando qualquer configuração que ela possa ter diferente da maquina de origem onde foi escrito e testado.
+Docker é uma ferramente designada a tornar mais fácil criar, fazer deploy e rodar aplicações usando container. Containers permitem ao desenvolvedor empacotar toda uma aplicação com as suas dependências e enviar como um pacote único. Fazendo isso, o desenvolvedor pode ficar tranquilo que a aplicação irá rodar independentemente da outra máquina, desconsiderando qualquer configuração que ela possa ter diferente da máquina de origem onde foi escrito e testado.
 
 ## [Containers](https://opensource.com/resources/what-docker)
 
-De uma certa maneira, Docker é parecido com uma VM. Mas diferente de uma VM, no lugar de criar um ambiente virtual completo, Docker pertime usar o mesmo Kernel linux que o sistem esta rodando e precisa somente que a aplicação seja enviada com o que ela precisa para rodar. Isto da uma grande aumento de performace e reduz o tamanho da aplicação.
+De uma certa maneira, Docker é parecido com uma VM. Mas diferente dessa, no lugar de criar um ambiente virtual completo, o Docker pertime usar o mesmo Kernel linux que o sistema está rodando e precisa somente que a aplicação seja enviada com o que ela precisa para rodar. Isto gera um grande aumento de performace e reduz o tamanho da aplicação.
 
 ## Mas por que utilizar docker na apliacação
 
-No ano passado (2018) fui apresentado ao Docker e suas facilidades, antes, quando precisava enviar qualquer aplicação a alguém era necessário enviar muita coisa. Containerização trouxe uma grande facilidade, tudo que precisava era criar uma imagem da minha aplicação, subir para o dockerhub e **voilà**, agora funciona em outras maquinas além da minha. Vou escrever ainda mais sobre docker e suas utilidades, mas acredito que esse post é de grande utilidade.
+No ano passado (2018) fui apresentado ao Docker e suas facilidades. Antes, quando precisava enviar qualquer aplicação a alguém era necessário enviar muita coisa. Containerização trouxe uma grande facilidade, tudo que preciso fazer é criar uma imagem da aplicação, subir para o dockerhub e **voilà**. Agora funciona em outras máquinas além da minha. Vou escrever ainda mais sobre docker e suas funcionalidades, mas acredito que esse post já é de grande utilidade.
 
 ## Ambiente
  
@@ -30,13 +30,13 @@ Eu utilizo o [docker no windows](https://docs.docker.com/docker-for-windows/) e 
 
 Será necessário habilitar o Hyper-V, que é a plataforma de processamento de virtualização.
 
-<img src="https://imgur.com/ute4eU2" style="height:300px;"/>
+<img src="https://i.imgur.com/ute4eU2.png" style="height:300px;"/>
 
 Caso a opção esteja indiponível, será necessário habilitar a virtualização na BIOS. [Esse passo a passo](https://www.qnap.com/pt-pt/how-to/faq/article/como-ativar-o-intel-vt-x-e-amd-svm/) da uma idéia de como executar esse procedimento.
 
-Depois de tudo instalado, o ícone do Docker vai aparecer na sua barra de ferramentas, ai é fazer login e ser feliz.
+Depois de tudo instalado, o ícone do Docker vai aparecer na sua barra de ferramentas, aí é fazer login e ser feliz.
 
-<img src="https://imgur.com/dJ6lzEF" style="height:300px;"/>
+<img src="https://i.imgur.com/dJ6lzEF.png" style="height:300px;"/>
 
 Para ter certeza que tudo deu certo, eu sempre executo:
 
@@ -44,7 +44,7 @@ Para ter certeza que tudo deu certo, eu sempre executo:
 docker run hello-world
 ```
 
-Se tudo correu bem, teremos a respota:
+Se tudo correu bem, teremos a resposta:
 
 ```
 Hello from Docker!
@@ -69,11 +69,11 @@ For more examples and ideas, visit:
  https://docs.docker.com/get-started/
 ```
 
-# Bora subir o nosso container
+# Bora subir nosso container
 
 Fiz um novo [branch do projeto](https://github.com/CassioRoos/python-base-project/tree/docker-app) para fazermos essa atividade.
 
-Bom, agora é criar o nosso container. Para isso vamos criar um **DockerFile**, contendo tudo que precismos para a nossa aplicação rodar. Tentando simplificar, **DockerFile** é uma receita de bolo que contem tudo que nossa aplicação precisa para rodar, o docker vai usar para criar o bolo, que é o nosso container, depois disso ele já esta pronto para uso. [**Aqui**](https://docs.docker.com/engine/reference/builder/) tem a documentação completa.
+Mãos a obra. Para isso vamos criar um **DockerFile**, contendo tudo que precisamos para a nossa aplicação rodar. Tentando simplificar, **DockerFile** é uma receita de bolo que contém tudo que nossa aplicação precisa para rodar. O docker vai usar essa receita para criar o bolo, que é o nosso container e depois disso ele já está pronto para uso. [**Aqui**](https://docs.docker.com/engine/reference/builder/) tem a documentação completa.
 
 Abaixo algumas das possibilidades do DockerFile:
 
@@ -111,7 +111,7 @@ COPY app.py .
 COPY Pipfile .
 COPY logging.yaml .
 
-# Instalamos as dependencias do python. Execução do pipfile.
+# Instalamos as dependências do python. Execução do pipfile.
 RUN pipenv install --skip-lock --deploy --system
 
 # Definimos as váriaveis do python
@@ -133,36 +133,53 @@ Para subir o container vamos executar o comando no cmd:
 docker build -t app-docker .
 ```
 
-Que basicamente é: Docker, **construa** o container **app-docker** a partir desta pasta. O docker tem suporta a ajuda em todos os seus comandos, caso tenha duvida escreva o comando e **--help**, no nosso caso: `docker build --help`. A partir deste momento o container esta pronto para uso, para subi-lo vamos utilizar o `docker run`.
+Que basicamente é: Docker, **construa** o container **app-docker** a partir desta pasta. 
+
+O docker tem suporte a ajuda em todos os seus comandos, caso tenha dúvida escreva o comando e **--help**, no nosso caso: `docker build --help`.
+
+A partir deste momento o container está pronto para uso, para subí-lo vamos utilizar o `docker run`.
 
 ```
-docker run -p 5001:5001 --name app-docker -d cassioroos/app-docker
+docker run -p 5001:5001 --name app-docker -d app-docker
 ```
 
-Se tudo deu certo, o docker ira mostrar o ID gerado para o container logo após o comando. Para ver o container devemos executar o comando `docker ps`, que exibira:
+Se tudo deu certo, o docker irá mostrar o **ID** gerado para o container logo após o comando. Para ver o container devemos executar o comando `docker ps`, que exibirá:
 
 ```
 CONTAINER ID        IMAGE                   COMMAND             CREATED             STATUS              PORTS                    NAMES
 3abd9b8240b7        app-docker             "python app.py"     38 seconds ago      Up 35 seconds       0.0.0.0:5001->5001/tcp   app-docker
 ```
 
-Pronto. Agora é acessar `localhost:5001` no seu navegador e vamos ter a resposta do nosso app de dentro do container. Tudo isso é muito legal, mas ainda precisamos disponibilizar o container para que outras pessoas/organizaççoes tenham acesso. Nesse exemplo vou utilizar o próprio (DockerHub)[https://hub.docker.com]
+Pronto. Agora vamos acessar `localhost:5001` no navegador e vamos ter a resposta do nosso app de dentro do container. 
+
+Tudo isso é muito legal, mas ainda precisamos disponibilizar o container para que outras pessoas tenham acesso. Nesse exemplo vou utilizar o próprio (DockerHub)[https://hub.docker.com].
 
 # Publicando o container
 
-A primeira coisa que precisamos fazer é gerar uma tag para o nosso container, que basicamente é a maneira de identificar as diferentes versões de um mesmo container. Para a tag é só informar a imagem e a tag, vale a pena verificar o help `docker tag --help`.
+A primeira coisa que precisamos fazer é gerar uma tag para o nosso container, que basicamente é a maneira de identificar as diferentes versões de um mesmo container. Para a tag precisamos informar a imagem e a definição da tag, vale a pena verificar o help `docker tag --help`.
+
 
 ```
-docker tag appdocker cassioroos/appdocker
+# docker tag suaimagem suatag
+docker tag app-docker cassioroos/app-docker
 ```
-Agora é só enviar o nosso container para o DockerHub
+Agora vamos enviar o nosso container para o DockerHub.
 
 ```
 docker push cassioroos/app-docker
 ```
 
+Partiu ver como ficou. Vamos acessar o DockerHub e ver a nossa imagem publicada. Ela deve estar no repositorio. 
+
+<img src="https://i.imgur.com/rHS2uBR.png" style="height:400px;"/>
+
+Agora sempre que precisarmos subir nossa aplicação, podemos fazer isso em qualquer máquina, sem preocupação com ambiente e configurações.
+
+```
+docker pull cassioroos/app-docker
+```
+
 FIM.
 
-Partiu ver como ficou, vamos acessar o DockerHub e ver a nossa imagem publicada, se limparmos todo o nosso ambiente, podemos fazer o download desse container em qualquer maquina que tenha docker instalado e ele ira funcionar como no nosso ambiente.
 
-Espero que tenham gostado. 
+Espero que tenham gostado.
