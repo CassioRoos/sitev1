@@ -1,0 +1,173 @@
+---
+layout: post
+title: "Docker-compose: facilitando o deploy"
+categories:
+  - pt-br
+tags:
+  - pt-br
+  - python
+  - docker
+  - docker-compose
+featured-img: docker_compose
+last_modified_at: 2019-02-10T21:26:32-05:00
+---
+
+# O que é [docker-compose](https://docs.docker.com/compose/gettingstarted/)
+
+Docker-compose é uma ferramenta de criação e execução de múltiplos containers. Ela simplifica a subida de containers e a sua execução. Funciona de forma parecida ao dockerfile, utilizando um arquivo `docker-compose.yml` onde é informado tudo o que precisar ser construído, para que seu ambiente funcione conforme o esperado.
+
+Por exemplo, sua aplicação python depende de um banco mongo para funcionar. Assim você precisaria instalar o python, configurá-lo, instalar o mongo, fazer a configuração e ainda ajustar para que as duas aplicações "conversem". O [docker-compose](https://docs.docker.com/compose/gettingstarted/) vem para simplificar tudo isso.
+
+
+# Arquivo YML
+
+Tal qual o `docker-file`, o `docker-compose.yml` funciona com uma receita, e dentro dele diremos como ele deve trabalhar. A diferença entre os dois é: "Dockerfile cria uma imagem, docker-compose cria uma stack".
+
+A documentação sobre tudo o que o compose pode fazer é bem extensa, [aqui está o link](https://docs.docker.com/compose/compose-file/).
+
+# Hands on
+
+Vamos usar o projeto [docker-mongo](https://github.com/CassioRoos/python-base-project/tree/docker-mongo) do repositório do python. Fiz algumas alterações para fazermos uma conexão simples para salvar dados via POST e retorná-los via GET. Para fazer os requests eu utilizei o [Postman](https://www.getpostman.com/downloads/) afim de facilitar a execução.
+
+Depois de clonar ou fazer download do projeto, precisamos instalar as dependências novamente, pois existem novos packeges que precisam ser instalados. 
+
+Como agora dependemos do MongoDB, vamos subir um container temporariamente para fazer os testes antes de gerarmos o compose.
+
+´´´
+docker run --name mongo -p 27017:27017 -d mongo:3.4
+´´´
+lembrando que o python precisa estar apontando para a base do mongo, assim vamos configurar no `.env` da aplicação. Segue configuração:
+
+```
+DB_URL=localhost
+DB_PORTA=27017
+DB_NOME=hello_world
+```
+Agora devemos executar o python. Quando a aplicação estiver rodando, vamos abrir o Postman e fazer um `GET` para a nossa aplicação. O resultado será exibido como na imagem abaixo:
+
+<img src="https://i.imgur.com/e7i5jSK.jpg" style="height:400px;"/>
+
+Para finalizar a validação do python, vamos fazer um `POST` da mesma forma que fizemos anteriormente.
+
+<img src="https://i.imgur.com/fV32qwU.jpg" style="height:400px;"/>
+
+Se executarmos o GET novamente, o sistema irá trazer os dados do mongo.
+
+# Beleza, mas cadê o compose?
+
+Agora sim vamos criar o nosso compose. Tudo o que vimos até agora foi para validar o nosso projeto e verificar a comunicação da aplicação local com o mongo no docker. 
+
+Devemos nos atentar que cada projeto é único e dessa maneira ainda não existe um container para a nossa aplicação. Como no [post anterior](http://cassioroos.com/pt-br/2019/01/27/Dockerizando-sua-aplicacao.html) vamos gerar a nossa imagem com o `dockerfile` e usar a imagem do mongo que subimos agora.
+
+Primeiro devemos interromper a execução do python e limpar o ambiente docker:
+
+```
+docker container rm -f mongo
+```
+
+FINALMENTE VAMOS GERAR O NOSSO COMPOSE FILE:
+
+```yaml
+# Definimos a versão do compose
+# Vale a olhadinha https://docs.docker.com/compose/compose-file/compose-versioning/
+version: '3.4'
+# Seção de serviços: podemos colocar N serviços aqui, tudo que a nossa aplicação precisar
+services:
+  # Nome do serviço do python. Quando usarmos qualquer coisa do docker-compose e necessitar um nome de serviço é ele que devemos utilizar e não o nome do container
+  python-app-mongo:
+    # Vamos usar o compose com base no dockerfile, então vamos precisar construir ele da mesma forma que fizemos anteriormente
+    # Caso fosse uma imagem deveríamos remover essa tag e colocar a IMAGE
+    build: 
+      # Local onde está o dockerfile
+      context: .
+      # Nome do dockerfile, no nosso caso é dockerfile mesmo
+      dockerfile: dockerfile
+    # As nossas variáveis de ambiente.
+    environment:
+    # Todas essas variáveis estão no config.py do nosso projeto.
+    # Porta onde o app será executado
+    - APP_PORT=5001
+    # Aqui vem a malandragem. Como estamos no ambiente do docker, não temos o localhost, pois isso seria dentro do próprio container.
+    # Colocando o nome do container o docker faz o trabalho de localizar o HOST.
+    - DB_URL=mongo
+    # A porta que liberamos para o mongo
+    - DB_PORTA=27017
+    # Nome da collection do mongo, pode ser qualquer coisa que desejar
+    - DB_NOME=hello_world
+    # Nome do nosso container
+    container_name: app-mongo
+    # DEPENDE DE: Ajuda o mongo a definir a ordem da nossa orquestra. Isso depende daquilo, que depende daquele outro e assim por diante.
+    depends_on:
+      - mongodb
+    # A porta que liberamos no container para acessar de fora.
+    # Essa tag deve estar de acordo com a variável APP_PORT
+    ports:
+      - 5001:5001
+  # Nome do serviço do mongo
+  mongodb:
+    # Nome do nosso container (mesmo que usamos no DB_URL)
+    container_name: mongo
+    # Como não precisamos construir nada, só usaremos a imagem já existente
+    image: mongo:3.4
+    ports: 
+      - 27017:27017
+```
+
+# Subindo nosso ambiente
+
+Agora precisamos subir o compose. Para isso devemos acessar a raiz do nosso projeto e executar o comando:
+
+```
+docker-compose up -d
+```
+
+Esse comando pode ser traduzido da seguinte maneira: docker-compose gera os container que estão no `docker-compose.yml` em background. Se quisessemos informar um arquivo diferente, deveríamos usar a tag `-f local\nomedoarquivo.yml`.
+
+Será que funcionou?
+
+```
+docker-compose ps
+```
+
+O resultado deve ser algo parecido com isso:
+
+```
+  Name                Command             State            Ports
+--------------------------------------------------------------------------
+app-mongo   python app.py                 Up      0.0.0.0:5001->5001/tcp
+mongo       docker-entrypoint.sh mongod   Up      0.0.0.0:27017->27017/tcp
+```
+
+Agora podemos fazer a mesma coisa que fizemos no início. Fazer requests de `GET` e `POST` para a aplicação do python.
+
+Para vizualizar o log devemos executar o comando:
+
+```
+docker-compose logs python-app-mongo
+```
+
+Se tudo ocorreu bem o resultado será:
+
+```
+app-mongo           | 10/02/2019 22:35:09     INFO            GET      /                    200  172.31.0.1        / 2019.974708557129
+app-mongo           | 10/02/2019 22:35:16     INFO            POST     /                    200  172.31.0.1        / 374.93038177490234
+app-mongo           | 10/02/2019 22:35:29     INFO            GET      /                    200  172.31.0.1        / 1013.7214660644531
+```
+
+Se quiser ver o log de tudo é só utilizar o comando:
+
+```
+docker-compose logs
+```
+
+Para "desligar" o nosso ambiente devemos executar o comando:
+
+```
+docker-compose down
+```
+
+*FIM*
+
+Acho legal dar uma brincada com container e compose para ver a coisa na prática mesmo. Tem muita documentação por aí e caso queira tirar uma dúvida ou dar alguma sugestão é só deixar um comentário ou enviar email.
+
+Espero que tenham gostado!
